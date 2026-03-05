@@ -440,6 +440,9 @@ function dongCacheKey(name, periodId) { return `dong|${name}|${periodId}|${YEAR}
 
 // ── TEST DATA INJECTION ───────────────────────────────────────────────────────
 function loadTestData() {
+  // Always wipe caches before reseeding so stale zeros never show
+  state.hrCache = {};
+  state.dongCache = {};
   state.players = [
     { name: 'Big Donger Dave',   teams: ['New York Yankees', 'Los Angeles Dodgers', 'Houston Astros'] },
     { name: 'Yard Sale Sally',   teams: ['Atlanta Braves', 'Philadelphia Phillies', 'Toronto Blue Jays'] },
@@ -512,9 +515,15 @@ async function init() {
     renderLongestBoard();
   }
 
-  const hasTeams = state.players.some(p => p.teams && p.teams.some(t => t && t.trim()));
-  if (!hasTeams) { loadTestData(); renderLeaderboard(); renderLongestBoard(); }
-  setSyncStatus('ok', 'Test data loaded — hit Refresh for live MLB data');
+  // TEST VERSION: always re-seed sample data on every load so scores are never zero.
+  // The cache is always wiped and refilled with fake data here.
+  // Hit the Refresh button manually if you want to pull live MLB data instead.
+  loadTestData();
+  ['monthSelect','setupMonthSelect'].forEach(id => document.getElementById(id).value = state.currentPeriod);
+  updateDateRangeInfo();
+  renderLeaderboard();
+  renderLongestBoard();
+  setSyncStatus('ok', 'Sample data loaded — hit ⚾ Refresh for live MLB stats');
 }
 
 function updateDateRangeInfo() {
