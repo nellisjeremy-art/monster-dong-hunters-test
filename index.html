@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monster Dong Hunters 🏟️ — TEST</title>
+<title>Monster Dong Hunters 🏟️</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -162,6 +162,39 @@
     .lb-card { grid-template-columns:28px 1fr auto; }
     .lb-best { font-size:32px; }
   }
+
+  /* BLUESKY FEED */
+  .bsky-feed { display:flex; flex-direction:column; gap:12px; }
+  .bsky-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; flex-wrap:wrap; gap:10px; }
+  .bsky-profile { display:flex; align-items:center; gap:12px; }
+  .bsky-avatar { width:44px; height:44px; border-radius:50%; border:2px solid var(--accent2); object-fit:cover; }
+  .bsky-handle { font-family:'Barlow Condensed',sans-serif; }
+  .bsky-display-name { font-size:18px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .bsky-at { font-size:13px; color:var(--accent2); letter-spacing:.03em; }
+  .bsky-desc { font-size:13px; color:var(--muted); margin-top:2px; line-height:1.4; max-width:420px; }
+  .bsky-post { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; transition:border-color .2s; }
+  .bsky-post:hover { border-color:rgba(100,180,255,.3); }
+  .bsky-post-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .bsky-post-avatar { width:34px; height:34px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+  .bsky-post-meta { min-width:0; }
+  .bsky-post-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; color:var(--text); }
+  .bsky-post-time { font-family:'Barlow Condensed',sans-serif; font-size:12px; color:var(--muted); }
+  .bsky-post-text { font-size:15px; line-height:1.55; color:var(--text); white-space:pre-wrap; word-break:break-word; }
+  .bsky-post-text a { color:var(--accent2); text-decoration:none; }
+  .bsky-post-text a:hover { text-decoration:underline; }
+  .bsky-post-img { margin-top:10px; border-radius:8px; width:100%; max-height:320px; object-fit:cover; border:1px solid var(--border); }
+  .bsky-post-footer { display:flex; gap:18px; margin-top:10px; }
+  .bsky-stat { font-family:'Barlow Condensed',sans-serif; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+  .bsky-stat span { color:var(--text); font-weight:700; }
+  .bsky-link { font-family:'Barlow Condensed',sans-serif; font-size:13px; color:var(--accent2); text-decoration:none; margin-left:auto; letter-spacing:.03em; }
+  .bsky-link:hover { text-decoration:underline; }
+  .bsky-loading { text-align:center; padding:40px; color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:16px; letter-spacing:.05em; }
+  .bsky-error { background:rgba(255,60,60,.08); border:1px solid rgba(255,60,60,.2); border-radius:10px; padding:16px; font-family:'Barlow Condensed',sans-serif; font-size:15px; color:#ff9999; text-align:center; }
+  .bsky-refresh-bar { display:flex; align-items:center; gap:10px; }
+  .bsky-auto { font-family:'Barlow Condensed',sans-serif; font-size:13px; color:var(--muted); }
+  .dong-highlight { background:rgba(255,140,0,.08); border-color:rgba(255,140,0,.35) !important; }
+  .dong-highlight .bsky-post-text { } 
+  .dong-pill { display:inline-block; background:rgba(255,140,0,.15); color:var(--accent2); font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:.1em; padding:2px 8px; border-radius:20px; margin-bottom:6px; border:1px solid rgba(255,140,0,.3); }
 </style>
 </head>
 <body>
@@ -199,7 +232,7 @@
   <header>
     <div class="logo-eyebrow">⚾ Fantasy Home Run League</div>
     <h1>Monster Dong<br>Hunters</h1>
-    <div class="subtitle" style="color:var(--accent)">⚠️ TEST / PRESEASON VERSION — Sample Data</div>
+    <div class="subtitle">Live MLB · Statcast distances · Free</div>
     <div style="display:flex;justify-content:center">
       <div class="cloud-indicator" onclick="jbShowModal()" id="cloudIndicator">
         <div class="cloud-dot" id="cloudDot"></div>
@@ -226,14 +259,11 @@
     <button class="tab active" onclick="showTab('leaderboard',this)">🏆 Standings</button>
     <button class="tab" onclick="showTab('longest',this)">💣 Longest Dongs</button>
     <button class="tab" onclick="showTab('setup',this)">⚙️ Draft Setup</button>
+    <button class="tab" onclick="showTab('bsky',this)">🦋 Would It Dong?</button>
   </div>
 
   <!-- STANDINGS -->
   <div id="tab-leaderboard">
-    <div style="background:rgba(255,60,60,0.1);border:1px solid rgba(255,60,60,0.3);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#ff9999;display:flex;align-items:center;gap:8px;">
-      ⚠️ <strong>TEST VERSION</strong> — Showing sample preseason data. Hit <strong>Refresh</strong> to load live MLB stats.
-      <button onclick="clearTestData()" style="margin-left:auto;font-size:12px;padding:4px 10px">Reset Test Data</button>
-    </div>
     <div class="error-banner" id="errorBanner"></div>
     <div class="leaderboard" id="leaderboardList"></div>
     <div class="last-updated" id="lastUpdated"></div>
@@ -260,6 +290,28 @@
     </div>
     <div class="dupe-warning" id="dupeWarning"></div>
     <div class="setup-grid" id="setupGrid"></div>
+  </div>
+
+  <!-- WOULD IT DONG - BLUESKY FEED -->
+  <div id="tab-bsky" style="display:none">
+    <div class="bsky-header">
+      <div class="bsky-profile">
+        <img class="bsky-avatar" id="bskyAvatar" src="" alt="avatar" onerror="this.style.display='none'">
+        <div class="bsky-handle">
+          <div class="bsky-display-name" id="bskyDisplayName">Would It Dong Again?</div>
+          <div class="bsky-at">@woulditdongagain.bsky.social</div>
+          <div class="bsky-desc" id="bskyDesc"></div>
+        </div>
+      </div>
+      <div class="bsky-refresh-bar">
+        <div class="bsky-auto" id="bskyLastFetch"></div>
+        <button class="primary" onclick="fetchBskyFeed(true)" style="font-size:13px;padding:7px 14px">🔄 Refresh</button>
+        <a class="bsky-link" href="https://bsky.app/profile/woulditdongagain.bsky.social" target="_blank">Open on Bluesky ↗</a>
+      </div>
+    </div>
+    <div class="bsky-feed" id="bskyFeed">
+      <div class="bsky-loading"><span class="spinner"></span> Loading feed…</div>
+    </div>
   </div>
 </div>
 
@@ -311,12 +363,12 @@ function defaultPeriodId() {
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 function loadState() {
-  try { const s = localStorage.getItem('mdh_test_v4'); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+  try { const s = localStorage.getItem('mdh_v4'); return s ? JSON.parse(s) : null; } catch(e) { return null; }
 }
-function saveState() { localStorage.setItem('mdh_test_v4', JSON.stringify(state)); }
+function saveState() { localStorage.setItem('mdh_v4', JSON.stringify(state)); }
 
 let state = loadState() || {
-  players: Array.from({length:10}, (_,i) => ({name:`Hunter ${i+1}`, teams:['','','']})),
+  players: Array.from({length:6}, (_,i) => ({name:`Hunter ${i+1}`, teams:['','','','']})),
   currentPeriod: defaultPeriodId(),
   hrCache: {},       // "TeamName|periodId|year" -> count
   dongCache: {},     // "dong|TeamName|periodId|year" -> [{dist, player, date}]
@@ -329,8 +381,8 @@ if (state.currentMonth !== undefined && state.currentPeriod === undefined) {
 }
 
 // ── JSONBIN ───────────────────────────────────────────────────────────────────
-const HARDCODED_KEY    = '';
-const HARDCODED_BIN_ID = '';
+const HARDCODED_KEY    = '$2a$10$ir5nPJTd6oDBJAhB1ZmAtOZ5xNY6K6hnqV3IxJ26GNLbC184lSkeG';
+const HARDCODED_BIN_ID = '69a8e92fd0ea881f40f01620';
 
 const JB_API = 'https://api.jsonbin.io/v3/b';
 function jbKey()   { return HARDCODED_KEY    || localStorage.getItem('mdh_jbkey')  || ''; }
@@ -437,63 +489,6 @@ function fmt(d) { return d.toISOString().split('T')[0]; }
 function hrCacheKey(name, periodId) { return `${name}|${periodId}|${YEAR}`; }
 function dongCacheKey(name, periodId) { return `dong|${name}|${periodId}|${YEAR}`; }
 
-
-// ── TEST DATA INJECTION ───────────────────────────────────────────────────────
-function loadTestData() {
-  // Always wipe caches before reseeding so stale zeros never show
-  state.hrCache = {};
-  state.dongCache = {};
-  state.players = [
-    { name: 'Big Donger Dave',   teams: ['New York Yankees', 'Los Angeles Dodgers', 'Houston Astros'] },
-    { name: 'Yard Sale Sally',   teams: ['Atlanta Braves', 'Philadelphia Phillies', 'Toronto Blue Jays'] },
-    { name: 'Launch Angle Larry',teams: ['San Diego Padres', 'Boston Red Sox', 'Texas Rangers'] },
-    { name: 'Exit Velo Emily',   teams: ['Baltimore Orioles', 'Minnesota Twins', 'Seattle Mariners'] },
-    { name: 'Moonshot Mike',     teams: ['Arizona Diamondbacks', 'Milwaukee Brewers', 'Detroit Tigers'] },
-    { name: 'Deep Fly Diane',    teams: ['St. Louis Cardinals', 'San Francisco Giants', 'Cleveland Guardians'] },
-    { name: 'Gone Girl Gina',    teams: ['Chicago Cubs', 'Miami Marlins', 'Kansas City Royals'] },
-    { name: 'Tape Measure Tony', teams: ['Tampa Bay Rays', 'Cincinnati Reds', 'Pittsburgh Pirates'] },
-    { name: 'No Doubter Nate',   teams: ['Colorado Rockies', 'Washington Nationals', 'Los Angeles Angels'] },
-    { name: 'Blast Radius Bob',  teams: ['New York Mets', 'Chicago White Sox', 'Athletics'] },
-  ];
-  state.currentPeriod = 2; // March + April
-
-  // Seed fake HR counts (realistic opening month numbers)
-  const fakeHRs = {
-    'New York Yankees':15, 'Los Angeles Dodgers':18, 'Houston Astros':11,
-    'Atlanta Braves':14, 'Philadelphia Phillies':12, 'Toronto Blue Jays':9,
-    'San Diego Padres':13, 'Boston Red Sox':10, 'Texas Rangers':8,
-    'Baltimore Orioles':16, 'Minnesota Twins':11, 'Seattle Mariners':7,
-    'Arizona Diamondbacks':12, 'Milwaukee Brewers':9, 'Detroit Tigers':10,
-    'St. Louis Cardinals':8, 'San Francisco Giants':11, 'Cleveland Guardians':13,
-    'Chicago Cubs':9, 'Miami Marlins':6, 'Kansas City Royals':10,
-    'Tampa Bay Rays':14, 'Cincinnati Reds':8, 'Pittsburgh Pirates':5,
-    'Colorado Rockies':11, 'Washington Nationals':6, 'Los Angeles Angels':9,
-    'New York Mets':12, 'Chicago White Sox':4, 'Athletics':7,
-  };
-  Object.entries(fakeHRs).forEach(([team, hrs]) => {
-    state.hrCache[hrCacheKey(team, 2)] = hrs;
-  });
-
-  // Seed fake longest HR data
-  const fakeDongs = {
-    'New York Yankees':     [{dist:462,player:'Judge, Aaron',date:'2025-04-05'},{dist:441,player:'Stanton, Giancarlo',date:'2025-04-12'},{dist:428,player:'Torres, Gleyber',date:'2025-03-30'}],
-    'Los Angeles Dodgers':  [{dist:455,player:'Ohtani, Shohei',date:'2025-04-08'},{dist:438,player:'Freeman, Freddie',date:'2025-04-14'},{dist:421,player:'Betts, Mookie',date:'2025-04-01'}],
-    'Houston Astros':       [{dist:447,player:'Alvarez, Yordan',date:'2025-04-10'},{dist:430,player:'Tucker, Kyle',date:'2025-04-03'},{dist:412,player:'Bregman, Alex',date:'2025-03-31'}],
-    'Atlanta Braves':       [{dist:451,player:'Acuna, Ronald',date:'2025-04-07'},{dist:436,player:'Olson, Matt',date:'2025-04-15'},{dist:418,player:'Riley, Austin',date:'2025-04-02'}],
-    'Philadelphia Phillies':[{dist:443,player:'Harper, Bryce',date:'2025-04-09'},{dist:428,player:'Schwarber, Kyle',date:'2025-04-11'},{dist:415,player:'Turner, Trea',date:'2025-04-04'}],
-    'Baltimore Orioles':    [{dist:458,player:'Gunnar Henderson',date:'2025-04-06'},{dist:439,player:'Mullins, Cedric',date:'2025-04-13'},{dist:422,player:'Mountcastle, Ryan',date:'2025-03-29'}],
-    'San Diego Padres':     [{dist:448,player:'Machado, Manny',date:'2025-04-08'},{dist:432,player:'Tatis, Fernando',date:'2025-04-16'},{dist:419,player:'Cronenworth, Jake',date:'2025-04-01'}],
-    'Tampa Bay Rays':       [{dist:444,player:'Ramirez, Harold',date:'2025-04-05'},{dist:427,player:'Arozarena, Randy',date:'2025-04-10'},{dist:411,player:'Lowe, Brandon',date:'2025-04-03'}],
-  };
-  Object.entries(fakeDongs).forEach(([team, dongs]) => {
-    state.dongCache[dongCacheKey(team, 2)] = dongs;
-  });
-
-  saveState();
-}
-
-function clearTestData() { localStorage.removeItem('mdh_test_v4'); location.reload(); }
-
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function init() {
   const opts = PERIODS.map(p=>`<option value="${p.id}">${p.label} ${YEAR}</option>`).join('');
@@ -515,15 +510,9 @@ async function init() {
     renderLongestBoard();
   }
 
-  // TEST VERSION: always re-seed sample data on every load so scores are never zero.
-  // The cache is always wiped and refilled with fake data here.
-  // Hit the Refresh button manually if you want to pull live MLB data instead.
-  loadTestData();
-  ['monthSelect','setupMonthSelect'].forEach(id => document.getElementById(id).value = state.currentPeriod);
-  updateDateRangeInfo();
-  renderLeaderboard();
-  renderLongestBoard();
-  setSyncStatus('ok', 'Sample data loaded — hit ⚾ Refresh for live MLB stats');
+  const hasTeams = state.players.some(p => p.teams && p.teams.some(t => t && t.trim()));
+  if (hasTeams) setTimeout(fetchAllData, 300);
+  else setSyncStatus('','Set up your draft to begin');
 }
 
 function updateDateRangeInfo() {
@@ -535,13 +524,14 @@ function updateDateRangeInfo() {
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function showTab(id, btn) {
-  ['leaderboard','longest','setup'].forEach(t => document.getElementById('tab-'+t).style.display='none');
+  ['leaderboard','longest','setup','bsky'].forEach(t => document.getElementById('tab-'+t).style.display='none');
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-'+id).style.display = '';
   btn.classList.add('active');
   if (id==='leaderboard') renderLeaderboard();
   if (id==='longest') renderLongestBoard();
   if (id==='setup') renderSetup();
+  if (id==='bsky' && !bskyLoaded) fetchBskyFeed(false);
 }
 
 function onMonthChange() {
@@ -586,7 +576,7 @@ async function fetchTeamHRs(teamId, startDate, endDate) {
 // ── FETCH: LONGEST HRs VIA STATCAST ──────────────────────────────────────────
 // Baseball Savant CSV endpoint — returns all HRs for a team in date range sorted by distance
 async function fetchTeamLongestHRs(teamId, startDate, endDate) {
-  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfPT=&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfPR=&hfZ=&hfStadium=&hfBBL=&hfNewZones=&hfPull=&hfC=&hfSea=${YEAR}%7C&hfSit=&player_type=batter&hfOuts=&hfOpponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=${startDate}&game_date_lt=${endDate}&hfMo=&hfTeam=${teamId}%7C&home_road=&hfRO=&position=&hfInfield=&hfOutfield=&hfInn=&hfBBT=&hfFlag=&metric_1=&group_by=name&min_pitches=0&min_results=0&min_pas=0&sort_col=hit_distance_sc&player_event_sort=hit_distance_sc&sort_order=desc&chk_stats_hit_distance_sc=on&chk_stats_player_name=on&type=details`;
+  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfSea=${YEAR}%7C&player_type=batter&game_date_gt=${startDate}&game_date_lt=${endDate}&hfTeam=${teamId}%7C&sort_col=hit_distance_sc&player_event_sort=hit_distance_sc&sort_order=desc&min_pitches=0&min_results=0&min_pas=0&type=details`;
   const csv = await proxyFetch(url, true);
   return parseStatcastCSV(csv, 3);
 }
@@ -594,21 +584,43 @@ async function fetchTeamLongestHRs(teamId, startDate, endDate) {
 function parseStatcastCSV(csv, limit=3) {
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
+
+  // Proper CSV row parser — handles quoted fields containing commas
+  function parseRow(line) {
+    const cols = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        inQuote = !inQuote;
+      } else if (ch === ',' && !inQuote) {
+        cols.push(cur.trim());
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    cols.push(cur.trim());
+    return cols;
+  }
+
+  const headers = parseRow(lines[0]);
   const distIdx = headers.indexOf('hit_distance_sc');
   const nameIdx = headers.indexOf('player_name');
   const dateIdx = headers.indexOf('game_date');
+
   if (distIdx === -1) return [];
 
   const results = [];
-  for (let i=1; i<lines.length && results.length < limit; i++) {
-    const cols = lines[i].split(',').map(c => c.trim().replace(/"/g,''));
+  for (let i = 1; i < lines.length && results.length < limit; i++) {
+    if (!lines[i].trim()) continue;
+    const cols = parseRow(lines[i]);
     const dist = parseInt(cols[distIdx], 10);
-    if (!dist || isNaN(dist)) continue;
+    if (!dist || isNaN(dist) || dist < 200) continue; // sanity check
     results.push({
       dist,
       player: nameIdx >= 0 ? cols[nameIdx] : 'Unknown',
-      date: dateIdx >= 0 ? cols[dateIdx] : ''
+      date:   dateIdx >= 0 ? cols[dateIdx] : ''
     });
   }
   return results;
@@ -811,11 +823,11 @@ function renderSetup() {
       </div>
       <input type="text" placeholder="Hunter name" value="${p.name||''}" id="pname-${i}" />
       <div class="team-selects">
-        ${[0,1,2].map(j=>`<select id="pt-${i}-${j}" onchange="checkDupes()"><option value="">— Team ${j+1} —</option>${opts}</select>`).join('')}
+        ${[0,1,2,3].map(j=>`<select id="pt-${i}-${j}" onchange="checkDupes()"><option value="">— Team ${j+1} —</option>${opts}</select>`).join('')}
       </div>
     </div>`).join('');
 
-  state.players.forEach((p,i)=>[0,1,2].forEach(j=>{
+  state.players.forEach((p,i)=>[0,1,2,3].forEach(j=>{
     const el=document.getElementById(`pt-${i}-${j}`);
     if (el&&p.teams&&p.teams[j]&&p.teams[j].trim()) el.value=p.teams[j].trim();
   }));
@@ -824,27 +836,165 @@ function renderSetup() {
 
 function checkDupes() {
   const picks=[];
-  for(let i=0;i<10;i++) for(let j=0;j<3;j++){const el=document.getElementById(`pt-${i}-${j}`); if(el&&el.value) picks.push({i,j,v:el.value});}
+  for(let i=0;i<6;i++) for(let j=0;j<4;j++){const el=document.getElementById(`pt-${i}-${j}`); if(el&&el.value) picks.push({i,j,v:el.value});}
   const counts={};
   picks.forEach(p=>{counts[p.v]=(counts[p.v]||0)+1;});
   const dupes=Object.entries(counts).filter(([,c])=>c>1).map(([t])=>t);
-  for(let i=0;i<10;i++) for(let j=0;j<3;j++){const el=document.getElementById(`pt-${i}-${j}`); if(!el) continue; el.style.borderColor=el.value&&dupes.includes(el.value)?'var(--accent)':'';}
+  for(let i=0;i<6;i++) for(let j=0;j<4;j++){const el=document.getElementById(`pt-${i}-${j}`); if(!el) continue; el.style.borderColor=el.value&&dupes.includes(el.value)?'var(--accent)':'';}
   document.getElementById('dupeWarning').innerHTML=dupes.length?`⚠️ Duplicate picks: ${dupes.join(', ')}`:'';
 }
 
 function saveSetup() {
   const allPicks=[];
-  for(let i=0;i<10;i++) for(let j=0;j<3;j++){const v=document.getElementById(`pt-${i}-${j}`)?.value; if(v) allPicks.push(v);}
+  for(let i=0;i<6;i++) for(let j=0;j<4;j++){const v=document.getElementById(`pt-${i}-${j}`)?.value; if(v) allPicks.push(v);}
   const dupes=[...new Set(allPicks.filter((v,i,a)=>a.indexOf(v)!==i))];
   if(dupes.length){alert('Fix duplicate teams first:\n'+dupes.join(', ')); return;}
-  state.players=Array.from({length:10},(_,i)=>({
+  state.players=Array.from({length:6},(_,i)=>({
     name:document.getElementById(`pname-${i}`)?.value?.trim()||`Hunter ${i+1}`,
-    teams:[0,1,2].map(j=>document.getElementById(`pt-${i}-${j}`)?.value||'')
+    teams:[0,1,2,3].map(j=>document.getElementById(`pt-${i}-${j}`)?.value||'')
   }));
   saveState();
   jbPush().then(()=>updateCloudIndicator());
   showTab('leaderboard', document.querySelector('.tab'));
   setTimeout(fetchAllData, 150);
+}
+
+
+// ── BLUESKY FEED ──────────────────────────────────────────────────────────────
+const BSKY_HANDLE = 'woulditdongagain.bsky.social';
+const BSKY_API    = 'https://public.api.bsky.app/xrpc';
+let bskyLoaded    = false;
+let bskyAutoTimer = null;
+
+async function fetchBskyFeed(manual = false) {
+  const feedEl = document.getElementById('bskyFeed');
+  if (!manual && bskyLoaded) return;
+  if (manual) feedEl.innerHTML = '<div class="bsky-loading"><span class="spinner"></span> Refreshing…</div>';
+
+  try {
+    // Fetch profile
+    const profileRes = await fetch(`${BSKY_API}/app.bsky.actor.getProfile?actor=${encodeURIComponent(BSKY_HANDLE)}`);
+    if (profileRes.ok) {
+      const profile = await profileRes.json();
+      const avatarEl = document.getElementById('bskyAvatar');
+      if (profile.avatar) { avatarEl.src = profile.avatar; avatarEl.style.display = ''; }
+      const dn = document.getElementById('bskyDisplayName');
+      if (profile.displayName) dn.textContent = profile.displayName;
+      const desc = document.getElementById('bskyDesc');
+      if (profile.description) desc.textContent = profile.description.slice(0, 120) + (profile.description.length > 120 ? '…' : '');
+    }
+
+    // Fetch posts
+    const feedRes = await fetch(`${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(BSKY_HANDLE)}&limit=25&filter=posts_no_replies`);
+    if (!feedRes.ok) throw new Error(`Bluesky API error ${feedRes.status}`);
+    const data = await feedRes.json();
+    const posts = (data.feed || []).filter(item => !item.reply); // top-level only
+
+    if (posts.length === 0) {
+      feedEl.innerHTML = '<div class="bsky-loading">No posts found yet.</div>';
+      return;
+    }
+
+    feedEl.innerHTML = posts.map(item => renderBskyPost(item.post)).join('');
+    bskyLoaded = true;
+
+    const now = new Date();
+    document.getElementById('bskyLastFetch').textContent = `Updated ${now.toLocaleTimeString()}`;
+
+    // Auto-refresh every 3 minutes while tab is open
+    clearTimeout(bskyAutoTimer);
+    bskyAutoTimer = setTimeout(() => { if (bskyLoaded) fetchBskyFeed(true); }, 3 * 60 * 1000);
+
+  } catch(e) {
+    feedEl.innerHTML = `<div class="bsky-error">⚠️ Could not load Bluesky feed: ${e.message}<br><br>
+      <a href="https://bsky.app/profile/${BSKY_HANDLE}" target="_blank" style="color:var(--accent2)">View directly on Bluesky ↗</a></div>`;
+  }
+}
+
+function renderBskyPost(post) {
+  const record   = post.record || {};
+  const author   = post.author || {};
+  const text     = record.text || '';
+  const time     = record.createdAt ? new Date(record.createdAt) : null;
+  const timeStr  = time ? time.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
+  const postUrl  = bskyPostUrl(post.uri, author.handle);
+  const likes    = post.likeCount || 0;
+  const reposts  = post.repostCount || 0;
+
+  // Highlight posts that seem dong-related
+  const isDong = /dong|home.?run|homer|hr|grand.?slam|would it/i.test(text);
+
+  // Images
+  const images = (post.embed?.images || post.embed?.media?.images || []);
+  const imgHtml = images.slice(0,1).map(img =>
+    `<img class="bsky-post-img" src="${img.fullsize || img.thumb}" alt="${img.alt || ''}" loading="lazy">`
+  ).join('');
+
+  // Linkify text
+  const linkedText = linkifyBsky(text, record.facets || []);
+
+  return `<div class="bsky-post ${isDong ? 'dong-highlight' : ''}">
+    ${isDong ? '<div class="dong-pill">💣 DONG DETECTED</div>' : ''}
+    <div class="bsky-post-header">
+      <img class="bsky-post-avatar" src="${author.avatar || ''}" alt="" onerror="this.style.display='none'">
+      <div class="bsky-post-meta">
+        <div class="bsky-post-name">${author.displayName || author.handle || ''}</div>
+        <div class="bsky-post-time">${timeStr}</div>
+      </div>
+      <a href="${postUrl}" target="_blank" class="bsky-link" style="font-size:12px;margin-left:auto">↗</a>
+    </div>
+    <div class="bsky-post-text">${linkedText}</div>
+    ${imgHtml}
+    <div class="bsky-post-footer">
+      <div class="bsky-stat">❤️ <span>${likes}</span></div>
+      <div class="bsky-stat">🔁 <span>${reposts}</span></div>
+    </div>
+  </div>`;
+}
+
+function bskyPostUrl(uri, handle) {
+  // at://did:plc:xxx/app.bsky.feed.post/RKEY -> bsky.app/profile/handle/post/RKEY
+  if (!uri) return `https://bsky.app/profile/${handle}`;
+  const parts = uri.split('/');
+  const rkey = parts[parts.length - 1];
+  return `https://bsky.app/profile/${handle}/post/${rkey}`;
+}
+
+function linkifyBsky(text, facets) {
+  // Escape HTML first
+  const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (!facets || facets.length === 0) return escaped;
+
+  // Build char-indexed replacements from facets
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(text);
+  const result = [];
+  let pos = 0;
+
+  const sorted = [...facets].sort((a,b) => a.index.byteStart - b.index.byteStart);
+  for (const facet of sorted) {
+    const {byteStart, byteEnd} = facet.index;
+    if (byteStart > pos) {
+      result.push(escapeHtml(new TextDecoder().decode(bytes.slice(pos, byteStart))));
+    }
+    const segment = new TextDecoder().decode(bytes.slice(byteStart, byteEnd));
+    const linkFeature = facet.features?.find(f => f.$type === 'app.bsky.richtext.facet#link');
+    const mentionFeature = facet.features?.find(f => f.$type === 'app.bsky.richtext.facet#mention');
+    if (linkFeature) {
+      result.push(`<a href="${linkFeature.uri}" target="_blank" rel="noopener">${escapeHtml(segment)}</a>`);
+    } else if (mentionFeature) {
+      result.push(`<a href="https://bsky.app/profile/${mentionFeature.did}" target="_blank">${escapeHtml(segment)}</a>`);
+    } else {
+      result.push(escapeHtml(segment));
+    }
+    pos = byteEnd;
+  }
+  if (pos < bytes.length) result.push(escapeHtml(new TextDecoder().decode(bytes.slice(pos))));
+  return result.join('');
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
