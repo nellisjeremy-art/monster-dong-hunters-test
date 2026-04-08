@@ -576,7 +576,7 @@ async function fetchTeamHRs(teamId, startDate, endDate) {
 // ── FETCH: LONGEST HRs VIA STATCAST ──────────────────────────────────────────
 // Baseball Savant CSV endpoint — returns all HRs for a team in date range sorted by distance
 async function fetchTeamLongestHRs(teamId, startDate, endDate) {
-  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfSea=${YEAR}%7C&player_type=batter&game_date_gt=${startDate}&game_date_lt=${endDate}&hfTeam=${teamId}%7C&sort_col=hit_distance_sc&player_event_sort=hit_distance_sc&sort_order=desc&min_pitches=0&min_results=0&min_pas=0&type=details`;
+  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfSea=${YEAR}%7C&player_type=batter&game_date_gt=${startDate}&game_date_lt=${endDate}&hfTeam=${teamId}%7C&group_by=name_event&sort_col=hit_distance_sc&player_event_sort=hit_distance_sc&sort_order=desc&min_pitches=0&min_results=0&min_pas=0&type=details`;
   const csv = await proxyFetch(url, true);
   return parseStatcastCSV(csv, 3);
 }
@@ -605,7 +605,9 @@ function parseStatcastCSV(csv, limit=3) {
   }
 
   const headers = parseRow(lines[0]);
-  const distIdx = headers.indexOf('hit_distance_sc');
+  const distIdx = headers.indexOf('hit_distance_sc') !== -1
+    ? headers.indexOf('hit_distance_sc')
+    : headers.indexOf('hit_distance');  // fallback column name
   const nameIdx = headers.indexOf('player_name');
   const dateIdx = headers.indexOf('game_date');
 
