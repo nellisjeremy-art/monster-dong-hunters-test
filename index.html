@@ -574,9 +574,11 @@ async function fetchTeamHRs(teamId, startDate, endDate) {
 }
 
 // ── FETCH: LONGEST HRs VIA STATCAST ──────────────────────────────────────────
-// Baseball Savant CSV endpoint — returns all HRs for a team in date range sorted by distance
+// Uses type=details with NO group_by so every row is one pitch/event.
+// We filter client-side to events=home_run rows, sort by hit_distance_sc desc.
 async function fetchTeamLongestHRs(teamId, startDate, endDate) {
-  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfSea=${YEAR}%7C&player_type=batter&game_date_gt=${startDate}&game_date_lt=${endDate}&hfTeam=${teamId}%7C&group_by=name_event&sort_col=hit_distance_sc&player_event_sort=hit_distance_sc&sort_order=desc&min_pitches=0&min_results=0&min_pas=0&type=details`;
+  // No group_by = pitch-level detail rows; hfAB filter pre-filters to HR plate appearances
+  const url = `https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfAB=home%5C.%5C.run%7C&hfGT=R%7C&hfSea=${YEAR}%7C&player_type=batter&game_date_gt=${startDate}&game_date_lt=${endDate}&hfTeam=${teamId}%7C&sort_col=hit_distance_sc&sort_order=desc&min_pitches=0&min_results=0&min_pas=0&type=details`;
   const csv = await proxyFetch(url, true);
   return parseStatcastCSV(csv, 3);
 }
@@ -585,47 +587,58 @@ function parseStatcastCSV(csv, limit=3) {
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return [];
 
-  // Proper CSV row parser — handles quoted fields containing commas
+  // Proper quoted-CSV parser — handles commas inside quoted fields
   function parseRow(line) {
     const cols = [];
     let cur = '', inQuote = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
-      if (ch === '"') {
-        inQuote = !inQuote;
-      } else if (ch === ',' && !inQuote) {
-        cols.push(cur.trim());
-        cur = '';
-      } else {
-        cur += ch;
-      }
+      if (ch === '"') { inQuote = !inQuote; }
+      else if (ch === ',' && !inQuote) { cols.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
     }
     cols.push(cur.trim());
     return cols;
   }
 
   const headers = parseRow(lines[0]);
-  const distIdx = headers.indexOf('hit_distance_sc') !== -1
-    ? headers.indexOf('hit_distance_sc')
-    : headers.indexOf('hit_distance');  // fallback column name
-  const nameIdx = headers.indexOf('player_name');
-  const dateIdx = headers.indexOf('game_date');
 
-  if (distIdx === -1) return [];
+  // Try both column name variants
+  let distIdx = headers.indexOf('hit_distance_sc');
+  if (distIdx === -1) distIdx = headers.indexOf('hit_distance');
+  const nameIdx  = headers.indexOf('player_name');
+  const dateIdx  = headers.indexOf('game_date');
+  const eventsIdx = headers.indexOf('events');
 
-  const results = [];
-  for (let i = 1; i < lines.length && results.length < limit; i++) {
+  if (distIdx === -1) {
+    console.warn('Statcast CSV: hit_distance_sc column not found. Headers:', headers.slice(0,10));
+    return [];
+  }
+
+  // Parse all valid HR rows
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const cols = parseRow(lines[i]);
+    if (cols.length < distIdx + 1) continue;
+
+    // Only keep rows that are actually home_run events (some rows may be the hit pitch)
+    const event = eventsIdx >= 0 ? cols[eventsIdx].toLowerCase() : 'home_run';
+    if (eventsIdx >= 0 && event !== 'home_run') continue;
+
     const dist = parseInt(cols[distIdx], 10);
-    if (!dist || isNaN(dist) || dist < 200) continue; // sanity check
-    results.push({
+    if (!dist || isNaN(dist) || dist < 50) continue; // skip blank/zero/bogus
+
+    rows.push({
       dist,
-      player: nameIdx >= 0 ? cols[nameIdx] : 'Unknown',
-      date:   dateIdx >= 0 ? cols[dateIdx] : ''
+      player: nameIdx >= 0 ? (cols[nameIdx] || 'Unknown') : 'Unknown',
+      date:   dateIdx >= 0 ? (cols[dateIdx] || '')        : ''
     });
   }
-  return results;
+
+  // Sort descending by distance (in case proxy didn't preserve sort order)
+  rows.sort((a, b) => b.dist - a.dist);
+  return rows.slice(0, limit);
 }
 
 // ── MAIN FETCH ORCHESTRATOR ───────────────────────────────────────────────────
