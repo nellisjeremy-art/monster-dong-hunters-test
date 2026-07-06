@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monster Dong Hunters 🏟️ — Round 2</title>
+<title>Monster Home Run Hunters 🏟️ — Round 2</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -257,7 +257,7 @@
 
   <div class="tabs">
     <button class="tab active" onclick="showTab('leaderboard',this)">🏆 Standings</button>
-    <button class="tab" onclick="showTab('longest',this)">💣 Longest Dongs</button>
+    <button class="tab" onclick="showTab('longest',this)">💣 Longest Home Runs</button>
     <button class="tab" onclick="showTab('setup',this)">⚙️ Draft Setup</button>
     <button class="tab" onclick="showTab('bsky',this)">🦋 Would It Dong?</button>
   </div>
@@ -269,7 +269,7 @@
     <div class="last-updated" id="lastUpdated"></div>
   </div>
 
-  <!-- LONGEST DONGS -->
+  <!-- LONGEST HOME RUNS -->
   <div id="tab-longest" style="display:none">
     <div class="longest-board" id="longestBoard"></div>
   </div>
@@ -686,7 +686,7 @@ function renderLeaderboard() {
       total += hrs;
       return {name: n, hrs};
     });
-    // Top 3 longest dongs across all their teams
+    // Top 3 longest home runs across all their teams
     const allDongs = [];
     (p.teams||[]).forEach(name => {
       const n = name && name.trim();
